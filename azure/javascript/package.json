@@ -1,0 +1,12 @@
+{
+  "name": "azure-function-config-service",
+  "version": "1.0.0",
+  "description": "Azure Function for configuration merging with vulnerabilities",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "0.21.0"
+  },
+  "comments": {
+    "vulnerability": "axios 0.21.0 has CVE-2020-28168 - Server-Side Request Forgery (SSRF)"
+  }
+}

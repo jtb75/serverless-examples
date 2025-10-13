@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Lambda function with C# - User Query Service
+
+Resources:
+  UserQueryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: AwsLambdaCSharp::AwsLambdaCSharp.Function::FunctionHandler
+      Runtime: dotnet6
+      CodeUri: .
+      Description: Queries user database (VULNERABLE - for testing only)
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          DB_CONNECTION_STRING: "Server=localhost;Database=users;User Id=sa;Password=P@ssw0rd;"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /query
+            Method: post

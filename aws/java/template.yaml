@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Lambda function with Java - Data Processing Service
+
+Resources:
+  DataProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.example.lambda.Handler::handleRequest
+      Runtime: java11
+      CodeUri: .
+      Description: Processes and deserializes data (VULNERABLE - for testing only)
+      MemorySize: 512
+      Timeout: 30
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /process
+            Method: post

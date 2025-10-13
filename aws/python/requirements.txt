@@ -1,0 +1,4 @@
+# VULNERABLE DEPENDENCY: Pillow 8.0.0
+# CVE-2021-25287: Buffer overflow in BLP image handler
+# CVE-2021-25288: Out-of-bounds read in the TIFF library
+Pillow==8.0.0

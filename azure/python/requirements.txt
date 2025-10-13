@@ -1,0 +1,4 @@
+azure-functions
+# VULNERABLE DEPENDENCY: requests 2.20.0
+# CVE-2018-18074: CRLF injection in the requests library
+requests==2.20.0

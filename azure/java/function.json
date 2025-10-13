@@ -1,0 +1,20 @@
+{
+  "scriptFile": "../target/azure-function-java-1.0.0.jar",
+  "entryPoint": "com.function.Function.run",
+  "bindings": [
+    {
+      "type": "httpTrigger",
+      "name": "req",
+      "direction": "in",
+      "authLevel": "function",
+      "methods": [
+        "post"
+      ]
+    },
+    {
+      "type": "http",
+      "name": "$return",
+      "direction": "out"
+    }
+  ]
+}

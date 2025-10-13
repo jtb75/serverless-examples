@@ -1,0 +1,12 @@
+{
+  "name": "aws-lambda-calculator",
+  "version": "1.0.0",
+  "description": "AWS Lambda calculator function with vulnerabilities",
+  "main": "index.js",
+  "dependencies": {
+    "lodash": "4.17.15"
+  },
+  "comments": {
+    "vulnerability": "lodash 4.17.15 has CVE-2020-8203 - Prototype Pollution vulnerability"
+  }
+}
