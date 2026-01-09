@@ -1,0 +1,13 @@
+{
+  "name": "xxe-vulnerable-azure-function",
+  "version": "1.0.0",
+  "description": "Azure Function with XXE vulnerability in libxml parsing (VULNERABLE - for testing only)",
+  "main": "index.js",
+  "dependencies": {
+    "libxmljs2": "0.31.0",
+    "lodash": "4.17.15",
+    "axios": "0.21.0",
+    "xmldom": "0.6.0"
+  },
+  "keywords": ["vulnerable", "xxe", "xml", "cwe-611", "sast-demo"]
+}

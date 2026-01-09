@@ -18,11 +18,21 @@ This repository contains intentionally vulnerable code and dependencies for secu
 │   │   ├── requirements.txt
 │   │   ├── template.yaml
 │   │   └── .env (MongoDB password, Git credentials)
+│   ├── python-subinterp/  # Python Lambda with subinterpreter code injection (CWE-94)
+│   │   ├── lambda_function.py
+│   │   ├── requirements.txt
+│   │   ├── template.yaml
+│   │   └── .env
 │   ├── javascript/     # Node.js Lambda with eval() vulnerability
 │   │   ├── index.js (MongoDB password in source)
 │   │   ├── package.json
 │   │   ├── template.yaml
 │   │   └── .env (MongoDB password)
+│   ├── javascript-sequelize/  # Node.js Lambda with SQL injection in Sequelize (CWE-89)
+│   │   ├── index.js
+│   │   ├── package.json
+│   │   ├── template.yaml
+│   │   └── .env
 │   ├── java/          # Java Lambda with deserialization vulnerability
 │   │   ├── Handler.java
 │   │   ├── pom.xml
@@ -32,6 +42,11 @@ This repository contains intentionally vulnerable code and dependencies for secu
 │   │   ├── AwsLambdaCSharp.csproj
 │   │   ├── template.yaml
 │   │   └── .env (AWS Access Key)
+│   ├── fsharp/        # F# Lambda with FsPickler insecure deserialization (CWE-502)
+│   │   ├── Function.fs
+│   │   ├── VulnerableFsPickler.fsproj
+│   │   ├── template.yaml
+│   │   └── .env
 │   └── go/            # Go Lambda with command injection vulnerability
 │       ├── main.go
 │       ├── go.mod
@@ -48,6 +63,12 @@ This repository contains intentionally vulnerable code and dependencies for secu
     │   ├── package.json
     │   ├── function.json
     │   └── .env (all secret types)
+    ├── javascript-xxe/  # Node.js Function with XXE vulnerability via libxml (CWE-611)
+    │   ├── index.js
+    │   ├── package.json
+    │   ├── function.json
+    │   ├── host.json
+    │   └── .env
     ├── java/          # Java Function with vulnerable dependency (clean code)
     │   ├── Function.java
     │   ├── pom.xml
@@ -57,6 +78,12 @@ This repository contains intentionally vulnerable code and dependencies for secu
     │   ├── AzureFunctionCSharp.csproj
     │   ├── host.json
     │   └── .env (all secret types)
+    ├── csharp-netdcs/  # C# Function with NetDataContractSerializer insecure deserialization (CWE-502)
+    │   ├── Function.cs
+    │   ├── VulnerableNetDCS.csproj
+    │   ├── function.json
+    │   ├── host.json
+    │   └── .env
     └── go/            # Go Function with path traversal vulnerability
         ├── handler.go
         ├── go.mod
@@ -69,22 +96,27 @@ This repository contains intentionally vulnerable code and dependencies for secu
 
 ### AWS Lambda Functions
 
-| Language   | Code Vulnerability | Vulnerable Dependency | CVE/Issue |
+| Language   | Code Vulnerability | Vulnerable Dependency | CVE/CWE |
 |------------|-------------------|----------------------|-----------|
 | **Python** | Insecure Pickle Deserialization | Pillow 8.0.0 | CVE-2021-25287, CVE-2021-25288 |
+| **Python (subinterp)** | Subinterpreter Code Injection | PyYAML 5.3.1 | CWE-94 |
 | **JavaScript** | eval() with user input | lodash 4.17.15 | CVE-2020-8203 |
+| **JavaScript (Sequelize)** | SQL Injection in Sequelize | lodash 4.17.15 | CWE-89 |
 | **Java** | ObjectInputStream Deserialization | log4j 2.14.1 | CVE-2021-44228 (Log4Shell) |
 | **C#** | SQL Injection | Newtonsoft.Json 12.0.1 | CVE-2024-21907 |
+| **F#** | FsPickler Insecure Deserialization | Newtonsoft.Json 12.0.1 | CWE-502 |
 | **Go** | Command Injection (os/exec) | gopkg.in/yaml.v2 2.2.7 | CVE-2022-28948 |
 
 ### Azure Functions
 
-| Language   | Code Vulnerability | Vulnerable Dependency | CVE/Issue |
+| Language   | Code Vulnerability | Vulnerable Dependency | CVE/CWE |
 |------------|-------------------|----------------------|-----------|
 | **Python** | Command Injection (os.system) | requests 2.20.0 | CVE-2018-18074 |
 | **JavaScript** | Prototype Pollution | axios 0.21.0 | CVE-2020-28168 |
+| **JavaScript (XXE)** | XXE via libxmljs2 | libxmljs2 0.31.0 | CWE-611 |
 | **Java** | None (clean code) | commons-collections 3.2.1 | CVE-2015-6420, CVE-2015-7501 |
 | **C#** | XML External Entity (XXE) | Newtonsoft.Json 12.0.1 | CVE-2024-21907 |
+| **C# (NetDCS)** | NetDataContractSerializer Deserialization | Newtonsoft.Json 12.0.1 | CWE-502 |
 | **Go** | Path Traversal | golang.org/x/crypto (old) | CVE-2020-9283 |
 
 ## Detailed Vulnerability Descriptions
@@ -116,6 +148,24 @@ This repository contains intentionally vulnerable code and dependencies for secu
 - **Dependency Vulnerability**: gopkg.in/yaml.v2 2.2.7 has stack exhaustion vulnerability
 - **Attack Vector**: Command injection via `command` field (e.g., `ls; cat /etc/passwd`)
 
+#### Python - Subinterpreter Code Execution (`aws/python-subinterp/`)
+- **Code Vulnerability**: Uses `_xxsubinterpreters.run_string()` to execute user-provided Python code in a subinterpreter
+- **Dependency Vulnerability**: PyYAML 5.3.1 allows arbitrary code execution
+- **CWE**: CWE-94 (Improper Control of Generation of Code)
+- **Attack Vector**: Send malicious Python code in `code` or `eval_expr` field
+
+#### JavaScript - Sequelize SQL Injection (`aws/javascript-sequelize/`)
+- **Code Vulnerability**: Multiple SQL injection patterns including raw queries with string concatenation, `Sequelize.literal()` with user input, and dynamic column names
+- **Dependency Vulnerability**: lodash 4.17.15 vulnerable to prototype pollution
+- **CWE**: CWE-89 (SQL Injection)
+- **Attack Vector**: SQL injection via `search`, `filter`, `orderBy`, or `column` fields
+
+#### F# - FsPickler Deserialization (`aws/fsharp/`)
+- **Code Vulnerability**: Uses FsPickler to deserialize user-provided binary and JSON data without type validation
+- **Dependency Vulnerability**: Newtonsoft.Json 12.0.1 has DoS vulnerability
+- **CWE**: CWE-502 (Deserialization of Untrusted Data)
+- **Attack Vector**: Send malicious serialized FsPickler payload in `binary_data` or `json_data` field
+
 ### Azure Functions
 
 #### Python - Diagnostic Service (`azure/python/`)
@@ -142,6 +192,18 @@ This repository contains intentionally vulnerable code and dependencies for secu
 - **Code Vulnerability**: Path traversal via unsanitized file path construction
 - **Dependency Vulnerability**: golang.org/x/crypto old version with panic vulnerability
 - **Attack Vector**: Path traversal via `filename` field (e.g., `../../etc/passwd`)
+
+#### JavaScript - XXE with libxml (`azure/javascript-xxe/`)
+- **Code Vulnerability**: Parses XML with `libxmljs2` using `noent: true` and `dtdload: true`, enabling external entity resolution
+- **Dependency Vulnerability**: lodash 4.17.15 vulnerable to prototype pollution, xmldom 0.6.0
+- **CWE**: CWE-611 (Improper Restriction of XML External Entity Reference)
+- **Attack Vector**: Send XML with external entity definitions to read local files or perform SSRF
+
+#### C# - NetDataContractSerializer Deserialization (`azure/csharp-netdcs/`)
+- **Code Vulnerability**: Uses `NetDataContractSerializer.Deserialize()` on user-provided data, which includes full CLR type information
+- **Dependency Vulnerability**: Newtonsoft.Json 12.0.1 has DoS vulnerability
+- **CWE**: CWE-502 (Deserialization of Untrusted Data)
+- **Attack Vector**: Send ysoserial.net gadget chain payload (e.g., ObjectDataProvider) in `payload` field
 
 ## Use Cases
 

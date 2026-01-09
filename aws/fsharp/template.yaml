@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Lambda F# function with Insecure Deserialization via FsPickler (CWE-502)
+
+Resources:
+  FsPicklerVulnerableFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: VulnerableFsPickler::VulnerableFsPickler.Handler::handler
+      Runtime: dotnet6
+      CodeUri: .
+      Description: Deserializes user data with FsPickler (VULNERABLE - for testing only)
+      MemorySize: 256
+      Timeout: 30
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /deserialize
+            Method: post
