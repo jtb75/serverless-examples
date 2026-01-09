@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Lambda demonstrating SQL Injection in Sequelize queries (CWE-89)
+
+Resources:
+  SequelizeSQLiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs18.x
+      CodeUri: .
+      Description: Database queries with SQL injection vulnerabilities (VULNERABLE - for testing only)
+      MemorySize: 256
+      Timeout: 30
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: post

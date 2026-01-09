@@ -1,0 +1,12 @@
+# Dependencies for Python Subinterpreter Vulnerability Demo
+# Note: _xxsubinterpreters is a built-in module in Python 3.8+
+
+# Vulnerable dependencies for SCA testing
+Pillow==8.0.0
+# CVE-2021-25287, CVE-2021-25288, CVE-2023-50447
+
+PyYAML==5.3.1
+# CVE-2020-14343 - Arbitrary code execution
+
+requests==2.25.0
+# CVE-2023-32681 - Information disclosure

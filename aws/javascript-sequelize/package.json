@@ -1,0 +1,14 @@
+{
+  "name": "sequelize-sqli-vulnerable",
+  "version": "1.0.0",
+  "description": "AWS Lambda with SQL Injection vulnerabilities in Sequelize (VULNERABLE - for testing only)",
+  "main": "index.js",
+  "dependencies": {
+    "sequelize": "6.21.0",
+    "sqlite3": "5.0.8",
+    "lodash": "4.17.15",
+    "axios": "0.21.0"
+  },
+  "devDependencies": {},
+  "keywords": ["vulnerable", "sql-injection", "sequelize", "cwe-89", "sast-demo"]
+}

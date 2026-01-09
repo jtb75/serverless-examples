@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Function.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- FsPickler - vulnerable to insecure deserialization -->
+    <PackageReference Include="FsPickler" Version="5.3.2" />
+    <PackageReference Include="FsPickler.Json" Version="5.3.2" />
+
+    <!-- AWS Lambda packages -->
+    <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.6.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.1" />
+
+    <!-- Vulnerable Newtonsoft.Json for SCA testing -->
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+</Project>
