@@ -1,0 +1,32 @@
+name: "wiz-cli"
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  wiz-cli-scan:
+    name: "Wiz-cli Scan"
+    runs-on: ubuntu-latest
+    env:
+      SECRETS_POLICY: "Demo GitLab Secrets Policy"
+      VULN_POLICY: "Demo GitLab Vuln Policy"
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download Wiz CLI
+        run: curl -o wizcli https://downloads.wiz.io/v1/wizcli/latest/wizcli-linux-amd64 && chmod +x wizcli
+
+      - name: Authenticate to Wiz
+        env:
+          WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
+          WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
+        run: ./wizcli auth --id "$WIZ_CLIENT_ID" --secret "$WIZ_CLIENT_SECRET"
+
+      - name: Run Wiz CLI scan
+        run: ./wizcli scan dir . -p "$SECRETS_POLICY" -p "$VULN_POLICY"
