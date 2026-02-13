@@ -26,4 +26,25 @@ jobs:
         env:
           WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
           WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
-        run: ./wizcli scan dir . -p "$SECRETS_POLICY" -p "$VULN_POLICY" --name="${{ github.event.repository.name }}-${{ github.run_id }}" --by-policy-hits="DISABLED"
+        run: |
+          ./wizcli scan dir . \
+            -p "$SECRETS_POLICY" \
+            -p "$VULN_POLICY" \
+            --name="${{ github.event.repository.name }}-${{ github.run_id }}" \
+            --by-policy-hits="DISABLED" \
+            --json-output-file=wiz-scan-results.json \
+            --sbom-output-file=wiz-sbom.json
+
+      - name: Upload scan results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiz-scan-results
+          path: wiz-scan-results.json
+
+      - name: Upload SBOM
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiz-sbom
+          path: wiz-sbom.json
