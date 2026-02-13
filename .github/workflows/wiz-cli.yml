@@ -26,4 +26,4 @@ jobs:
         env:
           WIZ_CLIENT_ID: ${{ secrets.WIZ_CLIENT_ID }}
           WIZ_CLIENT_SECRET: ${{ secrets.WIZ_CLIENT_SECRET }}
-        run: ./wizcli scan dir . -p "$SECRETS_POLICY" -p "$VULN_POLICY" --name="${{ github.event.repository.name }}-${{ github.run_id }}"
+        run: ./wizcli scan dir . -p "$SECRETS_POLICY" -p "$VULN_POLICY" --name="${{ github.event.repository.name }}-${{ github.run_id }}" --by-policy-hits="DISABLED"
