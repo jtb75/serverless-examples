@@ -33,6 +33,7 @@ jobs:
             --name="${{ github.event.repository.name }}-${{ github.run_id }}" \
             --by-policy-hits="DISABLED" \
             --json-output-file=wiz-scan-results.json \
+            --sbom-format=cyclonedx-json \
             --sbom-output-file=wiz-sbom.json
 
       - name: Upload scan results
